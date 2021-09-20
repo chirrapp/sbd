@@ -9,7 +9,7 @@
     // "noUncheckedIndexedAccess": true,
     "strict": true,
     "sourceMap": true,
-    "outDir": "dist"
+    "outDir": "lib"
   },
-  "include": ["lib/**/*"]
+  "include": ["src/**/*"]
 }

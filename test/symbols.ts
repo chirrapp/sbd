@@ -1,5 +1,5 @@
 import assert from "assert";
-import * as tokenizer from "../lib/tokenizer";
+import * as tokenizer from "../src/tokenizer";
 
 describe("Sentences with symbols", () => {
   describe("It should skip numbers", () => {
