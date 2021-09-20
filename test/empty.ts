@@ -16,28 +16,6 @@ describe("Empty", () => {
     });
   });
 
-  describe("undefined", () => {
-    const sentences = tokenizer.sentences();
-
-    it("should not get a sentence", () => {
-      assert.equal(sentences.length, 0);
-    });
-  });
-
-  describe("non string", () => {
-    it("should not get a sentence from array", () => {
-      const entry = [];
-      const sentences = tokenizer.sentences(entry);
-      assert.equal(sentences.length, 0);
-    });
-
-    it("should not get a sentence from object", () => {
-      const entry = {};
-      const sentences = tokenizer.sentences(entry);
-      assert.equal(sentences.length, 0);
-    });
-  });
-
   describe("symbols only", () => {
     const entry = "^&%(*&";
     const sentences = tokenizer.sentences(entry);
