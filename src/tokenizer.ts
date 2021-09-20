@@ -1,4 +1,5 @@
-import * as Match from "./Match";
+import { englishAbbreviations } from "./abbreviations";
+import * as match from "./match";
 
 const newline_placeholder = " @~@ ";
 const newline_placeholder_t = newline_placeholder.trim();
@@ -14,7 +15,10 @@ export interface SentencesOptions {
 }
 
 // Split the entry into sentences.
-export function sentences(text: string, user_options?: SentencesOptions) {
+export function sentences(
+  text: string,
+  user_options?: SentencesOptions
+): string[] {
   if (!text || typeof text !== "string" || !text.length) {
     return [];
   }
@@ -37,8 +41,6 @@ export function sentences(text: string, user_options?: SentencesOptions) {
     // Extend options
     Object.assign(options, user_options);
   }
-
-  Match.setAbbreviations(options.abbreviations);
 
   if (options.newline_boundaries) {
     text = text.replace(addNewLineBoundaries, newline_placeholder);
@@ -85,7 +87,7 @@ export function sentences(text: string, user_options?: SentencesOptions) {
     }
 
     if (
-      Match.isBoundaryChar(words[i]) ||
+      match.isBoundaryChar(words[i]) ||
       endsWithChar(words[i], "?!") ||
       words[i] === newline_placeholder_t
     ) {
@@ -118,24 +120,29 @@ export function sentences(text: string, user_options?: SentencesOptions) {
         }
 
         // Common abbr. that often do not end sentences
-        if (Match.isCommonAbbreviation(words[i])) {
+        if (
+          match.isCommonAbbreviation(
+            options.abbreviations || englishAbbreviations,
+            words[i]
+          )
+        ) {
           continue;
         }
 
         // Next word starts with capital word, but current sentence is
         // quite short
-        if (Match.isSentenceStarter(words[i + 1])) {
-          if (Match.isTimeAbbreviation(words[i], words[i + 1])) {
+        if (match.isSentenceStarter(words[i + 1])) {
+          if (match.isTimeAbbreviation(words[i], words[i + 1])) {
             continue;
           }
 
           // Dealing with names at the start of sentences
-          if (Match.isNameAbbreviation(wordCount, words.slice(i, 6))) {
+          if (match.isNameAbbreviation(wordCount, words.slice(i, 6))) {
             continue;
           }
 
-          if (Match.isNumber(words[i + 1])) {
-            if (Match.isCustomAbbreviation(words[i])) {
+          if (match.isNumber(words[i + 1])) {
+            if (match.isCustomAbbreviation(words[i])) {
               continue;
             }
           }
@@ -147,11 +154,11 @@ export function sentences(text: string, user_options?: SentencesOptions) {
 
           //// Skip abbreviations
           // Short words + dot or a dot after each letter
-          if (Match.isDottedAbbreviation(words[i])) {
+          if (match.isDottedAbbreviation(words[i])) {
             continue;
           }
 
-          if (Match.isNameAbbreviation(wordCount, words.slice(i, 5))) {
+          if (match.isNameAbbreviation(wordCount, words.slice(i, 5))) {
             continue;
           }
         }
@@ -166,22 +173,22 @@ export function sentences(text: string, user_options?: SentencesOptions) {
 
     // Check if the word has a dot in it
     if ((index = words[i].indexOf(".")) > -1) {
-      if (Match.isNumber(words[i], index)) {
+      if (match.isNumber(words[i], index)) {
         continue;
       }
 
       // Custom dotted abbreviations (like K.L.M or I.C.T)
-      if (Match.isDottedAbbreviation(words[i])) {
+      if (match.isDottedAbbreviation(words[i])) {
         continue;
       }
 
       // Skip urls / emails and the like
-      if (Match.isURL(words[i]) || Match.isPhoneNr(words[i])) {
+      if (match.isURL(words[i]) || match.isPhoneNr(words[i])) {
         continue;
       }
     }
 
-    if ((temp = Match.isConcatenated(words[i]))) {
+    if ((temp = match.isConcatenated(words[i]))) {
       current.pop();
       current.push(temp[0]);
       sentences.push(current);

@@ -1,5 +1,5 @@
 module.exports = {
-  testRegex: "test/*",
+  testRegex: ["test/*", "tests.ts"],
   transform: {
     "\\.ts$": "esbuild-runner/jest",
   },
