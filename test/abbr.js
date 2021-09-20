@@ -65,9 +65,6 @@ describe('Abbreviations in sentences', function () {
     describe('Use other languages (accented)', function () {
         const options = {
             "newline_boundaries" : true,
-            "html_boundaries"    : false,
-            "sanitize"           : false,
-            "allowed_tags"       : false,
             "preserve_whitespace" : true,
             "abbreviations"      : ["pré"]
         };
@@ -100,9 +97,6 @@ describe('Abbreviations in sentences', function () {
     describe('Use other languages (Cyrillic)', function () {
         const options = {
             "newline_boundaries" : true,
-            "html_boundaries"    : false,
-            "sanitize"           : false,
-            "allowed_tags"       : false,
             "preserve_whitespace" : true,
             "abbreviations"      : ["табл", "рис"]
         };
