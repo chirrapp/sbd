@@ -11,9 +11,14 @@ var whiteSpaceCheck = new RegExp("\\S", "");
 var addNewLineBoundaries = new RegExp("\\n+|[-#=_+*]{4,}", "g");
 var splitIntoWords = new RegExp("\\S+|\\n", "g");
 
+export interface SentencesOptions {
+    newline_boundaries?: boolean
+    preserve_whitespace?: boolean
+    abbreviations?: string[]
+}
 
 // Split the entry into sentences.
-export function sentences(text, user_options) {
+export function sentences(text: string, user_options?: SentencesOptions) {
     if (!text || typeof text !== "string" || !text.length) {
         return [];
     }
@@ -35,9 +40,7 @@ export function sentences(text, user_options) {
     }
     else {
         // Extend options
-        for (var k in user_options) {
-            options[k] = user_options[k];
-        }
+        Object.assign(options, user_options);
     }
 
     Match.setAbbreviations(options.abbreviations);
@@ -47,8 +50,8 @@ export function sentences(text, user_options) {
     }
 
     // Split the text into words
-    var words;
-    var tokens;
+    var words : string[] | null;
+    var tokens : string[];
 
     // Split the text into words
     if (options.preserve_whitespace) {
@@ -68,7 +71,7 @@ export function sentences(text, user_options) {
 
     var wordCount = 0;
     var index = 0;
-    var temp  = [];
+    var temp: false | string[] = [];
     var sentences = [];
     var current   = [];
 
@@ -114,7 +117,7 @@ export function sentences(text, user_options) {
             // This probably needs to be improved with machine learning
             if (i+1 < L) {
                 // Single character abbr.
-                if (words[i].length === 2 && isNaN(words[i].charAt(0))) {
+                if (words[i].length === 2 && isNaN(+words[i].charAt(0))) {
                     continue;
                 }
 

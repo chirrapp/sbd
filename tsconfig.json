@@ -5,7 +5,8 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "noUncheckedIndexedAccess": true,
+    // TODO: Enable once TypeScript migration is complete
+    // "noUncheckedIndexedAccess": true,
     "strict": true,
     "sourceMap": true,
     "outDir": "dist"
