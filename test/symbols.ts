@@ -2,8 +2,8 @@
 /*global describe:true, it:true */
 "use strict";
 
-var assert = require('assert');
-var tokenizer = require('../lib/tokenizer');
+import assert from 'assert';
+import * as tokenizer from '../lib/tokenizer'
 
 describe('Sentences with symbols', function () {
 

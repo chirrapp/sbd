@@ -63,7 +63,7 @@ var englishAbbreviations = [
     "v",
 ];
 
-exports.setAbbreviations = function(abbr) {
+export function setAbbreviations(abbr) {
     if (abbr) {
         abbreviations = abbr;
     } else {
@@ -71,23 +71,23 @@ exports.setAbbreviations = function(abbr) {
     }
 }
 
-var isCapitalized = exports.isCapitalized = function(str) {
+export function isCapitalized(str) {
     return /^[A-Z][a-z].*/.test(str) || isNumber(str);
 }
 
 // Start with opening quotes or capitalized letter
-exports.isSentenceStarter = function(str) {
+export function isSentenceStarter(str) {
     return isCapitalized(str) || /``|"|'/.test(str.substring(0,2));
 }
 
-exports.isCommonAbbreviation = function(str) {
+export function isCommonAbbreviation(str) {
     var noSymbols = str.replace(/[-'`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, "");
 
     return ~abbreviations.indexOf(noSymbols);
 }
 
 // This is going towards too much rule based
-exports.isTimeAbbreviation = function(word, next) {
+export function isTimeAbbreviation(word, next) {
     if (word === "a.m." || word === "p.m.") {
         var tmp = next.replace(/\W+/g, '').slice(-3).toLowerCase();
 
@@ -99,14 +99,14 @@ exports.isTimeAbbreviation = function(word, next) {
     return false;
 }
 
-exports.isDottedAbbreviation = function(word) {
+export function isDottedAbbreviation(word) {
     var matches = word.replace(/[\(\)\[\]\{\}]/g, '').match(/(.\.)*/);
     return matches && matches[0].length > 0;
 }
 
 // TODO look for next words, if multiple are capitalized,
 // then it's probably not a sentence ending
-exports.isCustomAbbreviation = function(str) {
+export function isCustomAbbreviation(str) {
     if (str.length <= 3) {
         return true;
     }
@@ -116,7 +116,7 @@ exports.isCustomAbbreviation = function(str) {
 
 // Uses current word count in sentence and next few words to check if it is
 // more likely an abbreviation + name or new sentence.
-exports.isNameAbbreviation = function(wordCount, words) {
+export function isNameAbbreviation(wordCount, words) {
     if (words.length > 0) {
         if (wordCount < 5 && words[0].length < 6 && isCapitalized(words[0])) {
             return true;
@@ -132,7 +132,7 @@ exports.isNameAbbreviation = function(wordCount, words) {
     return false;
 }
 
-var isNumber = exports.isNumber = function(str, dotPos) {
+export function isNumber(str, dotPos) {
     if (dotPos) {
         str = str.slice(dotPos-1, dotPos+2);
     }
@@ -142,19 +142,19 @@ var isNumber = exports.isNumber = function(str, dotPos) {
 
 // Phone number matching
 // http://stackoverflow.com/a/123666/951517
-exports.isPhoneNr = function(str) {
+export function isPhoneNr(str) {
     return str.match(/^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/);
 };
 
 // Match urls / emails
 // http://stackoverflow.com/a/3809435/951517
-exports.isURL = function(str) {
+export function isURL(str) {
     return str.match(/[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/);
 };
 
 // Starting a new sentence if beginning with capital letter
 // Exception: The word is enclosed in brackets
-exports.isConcatenated = function(word) {
+export function isConcatenated(word) {
     var i = 0;
 
     if ((i = word.indexOf(".")) > -1 ||
@@ -172,7 +172,7 @@ exports.isConcatenated = function(word) {
     return false;
 };
 
-exports.isBoundaryChar = function(word) {
+export function isBoundaryChar(word) {
     return word === "." ||
            word === "!" ||
            word === "?";

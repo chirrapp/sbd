@@ -2,8 +2,8 @@
 /*global describe:true, it:true */
 "use strict";
 
-const assert = require('assert');
-const tokenizer = require('../lib/tokenizer');
+import assert from 'assert';
+import * as tokenizer from '../lib/tokenizer';
 
 describe('Abbreviations in sentences', function () {
     describe('Skip dotted abbreviations', function () {

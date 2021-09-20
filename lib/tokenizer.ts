@@ -1,7 +1,7 @@
 /*jshint node:true, laxcomma:true */
 
-var stringHelper = require("./stringHelper");
-var Match  = require("./Match");
+import * as stringHelper from "./stringHelper";
+import * as Match from "./Match";
 
 var newline_placeholder = " @~@ ";
 var newline_placeholder_t = newline_placeholder.trim();
@@ -13,7 +13,7 @@ var splitIntoWords = new RegExp("\\S+|\\n", "g");
 
 
 // Split the entry into sentences.
-exports.sentences = function(text, user_options) {
+export function sentences(text, user_options) {
     if (!text || typeof text !== "string" || !text.length) {
         return [];
     }
