@@ -1,4 +1,3 @@
-import * as stringHelper from "./stringHelper";
 import * as Match from "./Match";
 
 const newline_placeholder = " @~@ ";
@@ -87,7 +86,7 @@ export function sentences(text: string, user_options?: SentencesOptions) {
 
     if (
       Match.isBoundaryChar(words[i]) ||
-      stringHelper.endsWithChar(words[i], "?!") ||
+      endsWithChar(words[i], "?!") ||
       words[i] === newline_placeholder_t
     ) {
       if (options.newline_boundaries && words[i] === newline_placeholder_t) {
@@ -102,17 +101,14 @@ export function sentences(text: string, user_options?: SentencesOptions) {
       continue;
     }
 
-    if (
-      stringHelper.endsWithChar(words[i], '"') ||
-      stringHelper.endsWithChar(words[i], "”")
-    ) {
+    if (endsWithChar(words[i], '"') || endsWithChar(words[i], "”")) {
       words[i] = words[i].slice(0, -1);
     }
 
     // A dot might indicate the end sentences
     // Exception: The next sentence starts with a word (non abbreviation)
     //            that has a capital letter.
-    if (stringHelper.endsWithChar(words[i], ".")) {
+    if (endsWithChar(words[i], ".")) {
       // Check if there is a next word
       // This probably needs to be improved with machine learning
       if (i + 1 < L) {
@@ -145,7 +141,7 @@ export function sentences(text: string, user_options?: SentencesOptions) {
           }
         } else {
           // Skip ellipsis
-          if (stringHelper.endsWith(words[i], "..")) {
+          if (words[i].endsWith("..")) {
             continue;
           }
 
@@ -245,4 +241,12 @@ export function sentences(text: string, user_options?: SentencesOptions) {
 
     return sentence.join(" ");
   });
+}
+
+function endsWithChar(word: string, char: string): boolean {
+  if (char.length > 1) {
+    return char.indexOf(word.slice(-1)) > -1;
+  } else {
+    return word.slice(-1) === char;
+  }
 }
