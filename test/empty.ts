@@ -1,52 +1,48 @@
 import assert from "assert";
 import * as tokenizer from "../lib/tokenizer";
 
-describe("Empty", function () {
-  describe("string", function () {
-    var entry = "";
-    var sentences = tokenizer.sentences(entry);
-
-    it("should not get a sentence", function () {
+describe("Empty", () => {
+  describe("string", () => {
+    it("should not get a sentence", () => {
+      const entry = "";
+      const sentences = tokenizer.sentences(entry);
       assert.equal(sentences.length, 0);
     });
 
-    var entry = "            \n\n                 ";
-    var sentences = tokenizer.sentences(entry);
-
-    it("should not get a sentence from whitespace", function () {
-      assert.equal(sentences.length, 0);
-    });
-  });
-
-  describe("undefined", function () {
-    var sentences = tokenizer.sentences();
-
-    it("should not get a sentence", function () {
+    it("should not get a sentence from whitespace", () => {
+      const entry = "            \n\n                 ";
+      const sentences = tokenizer.sentences(entry);
       assert.equal(sentences.length, 0);
     });
   });
 
-  describe("non string", function () {
-    var entry = [];
-    var sentences = tokenizer.sentences(entry);
+  describe("undefined", () => {
+    const sentences = tokenizer.sentences();
 
-    it("should not get a sentence from array", function () {
-      assert.equal(sentences.length, 0);
-    });
-
-    var entry = {};
-    var sentences = tokenizer.sentences(entry);
-
-    it("should not get a sentence from object", function () {
+    it("should not get a sentence", () => {
       assert.equal(sentences.length, 0);
     });
   });
 
-  describe("symbols only", function () {
-    var entry = "^&%(*&";
-    var sentences = tokenizer.sentences(entry);
+  describe("non string", () => {
+    it("should not get a sentence from array", () => {
+      const entry = [];
+      const sentences = tokenizer.sentences(entry);
+      assert.equal(sentences.length, 0);
+    });
 
-    it("should not single entry", function () {
+    it("should not get a sentence from object", () => {
+      const entry = {};
+      const sentences = tokenizer.sentences(entry);
+      assert.equal(sentences.length, 0);
+    });
+  });
+
+  describe("symbols only", () => {
+    const entry = "^&%(*&";
+    const sentences = tokenizer.sentences(entry);
+
+    it("should not single entry", () => {
       assert.equal(sentences.length, 1);
     });
   });

@@ -1,6 +1,6 @@
-var abbreviations: string[];
+let abbreviations: string[];
 
-var englishAbbreviations = [
+const englishAbbreviations = [
   "al",
   "adj",
   "assn",
@@ -125,7 +125,7 @@ export function isSentenceStarter(str: string) {
 }
 
 export function isCommonAbbreviation(str: string) {
-  var noSymbols = str.replace(
+  const noSymbols = str.replace(
     /[-'`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi,
     ""
   );
@@ -136,7 +136,7 @@ export function isCommonAbbreviation(str: string) {
 // This is going towards too much rule based
 export function isTimeAbbreviation(word: string, next: string) {
   if (word === "a.m." || word === "p.m.") {
-    var tmp = next.replace(/\W+/g, "").slice(-3).toLowerCase();
+    const tmp = next.replace(/\W+/g, "").slice(-3).toLowerCase();
 
     if (tmp === "day") {
       return true;
@@ -147,7 +147,7 @@ export function isTimeAbbreviation(word: string, next: string) {
 }
 
 export function isDottedAbbreviation(word: string) {
-  var matches = word.replace(/[\(\)\[\]\{\}]/g, "").match(/(.\.)*/);
+  const matches = word.replace(/[\(\)\[\]\{\}]/g, "").match(/(.\.)*/);
   return matches && matches[0].length > 0;
 }
 
@@ -169,7 +169,7 @@ export function isNameAbbreviation(wordCount: number, words: string[]) {
       return true;
     }
 
-    var capitalized = words.filter(function (str) {
+    const capitalized = words.filter(function (str) {
       return /[A-Z]/.test(str.charAt(0));
     });
 
@@ -206,14 +206,14 @@ export function isURL(str: string) {
 // Starting a new sentence if beginning with capital letter
 // Exception: The word is enclosed in brackets
 export function isConcatenated(word: string) {
-  var i = 0;
+  let i = 0;
 
   if (
     (i = word.indexOf(".")) > -1 ||
     (i = word.indexOf("!")) > -1 ||
     (i = word.indexOf("?")) > -1
   ) {
-    var c = word.charAt(i + 1);
+    const c = word.charAt(i + 1);
 
     // Check if the next word starts with a letter
     if (c.match(/[a-zA-Z].*/)) {

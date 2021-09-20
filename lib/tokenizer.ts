@@ -1,14 +1,12 @@
-/*jshint node:true, laxcomma:true */
-
 import * as stringHelper from "./stringHelper";
 import * as Match from "./Match";
 
-var newline_placeholder = " @~@ ";
-var newline_placeholder_t = newline_placeholder.trim();
+const newline_placeholder = " @~@ ";
+const newline_placeholder_t = newline_placeholder.trim();
 
-var whiteSpaceCheck = new RegExp("\\S", "");
-var addNewLineBoundaries = new RegExp("\\n+|[-#=_+*]{4,}", "g");
-var splitIntoWords = new RegExp("\\S+|\\n", "g");
+const whiteSpaceCheck = new RegExp("\\S", "");
+const addNewLineBoundaries = new RegExp("\\n+|[-#=_+*]{4,}", "g");
+const splitIntoWords = new RegExp("\\S+|\\n", "g");
 
 export interface SentencesOptions {
   newline_boundaries?: boolean;
@@ -27,7 +25,7 @@ export function sentences(text: string, user_options?: SentencesOptions) {
     return [];
   }
 
-  var options = {
+  const options = {
     newline_boundaries: false,
     preserve_whitespace: false,
     abbreviations: null,
@@ -48,8 +46,8 @@ export function sentences(text: string, user_options?: SentencesOptions) {
   }
 
   // Split the text into words
-  var words: string[] | null;
-  var tokens: string[];
+  let words: string[] | null;
+  let tokens: string[];
 
   // Split the text into words
   if (options.preserve_whitespace) {
@@ -65,18 +63,18 @@ export function sentences(text: string, user_options?: SentencesOptions) {
     words = text.trim().match(splitIntoWords);
   }
 
-  var wordCount = 0;
-  var index = 0;
-  var temp: false | string[] = [];
-  var sentences = [];
-  var current = [];
+  let wordCount = 0;
+  let index = 0;
+  let temp: false | string[] = [];
+  let sentences = [];
+  let current = [];
 
   // If given text is only whitespace (or nothing of \S+)
   if (!words || !words.length) {
     return [];
   }
 
-  for (var i = 0, L = words.length; i < L; i++) {
+  for (let i = 0, L = words.length; i < L; i++) {
     wordCount++;
 
     // Add the word to current sentence
@@ -207,9 +205,9 @@ export function sentences(text: string, user_options?: SentencesOptions) {
     return s.length > 0;
   });
 
-  var result = sentences.slice(1).reduce(
+  const result = sentences.slice(1).reduce(
     function (out, sentence) {
-      var lastSentence = out[out.length - 1];
+      const lastSentence = out[out.length - 1];
 
       // Single words, could be "enumeration lists"
       if (lastSentence.length === 1 && /^.{1,2}[.]$/.test(lastSentence[0])) {
@@ -236,7 +234,7 @@ export function sentences(text: string, user_options?: SentencesOptions) {
       // token, non-space token, space token... ]. In other words, the first
       // item is the leading space (or the empty string), and the rest of
       // the tokens are [non-space, space] token pairs.
-      var tokenCount = sentence.length * 2;
+      let tokenCount = sentence.length * 2;
 
       if (ii === 0) {
         tokenCount += 1;

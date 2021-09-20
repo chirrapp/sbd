@@ -1,43 +1,46 @@
 import assert from "assert";
 import * as tokenizer from "../lib/tokenizer";
 
-describe("Save newlines", function () {
-  describe("Basic", function () {
-    var entry = "First sentence... Another list: \n - green \n - blue \n - red";
-    var sentences = tokenizer.sentences(entry);
+describe("Save newlines", () => {
+  describe("Basic", () => {
+    const entry =
+      "First sentence... Another list: \n - green \n - blue \n - red";
+    const sentences = tokenizer.sentences(entry);
 
-    it("second sentence should have newlines", function () {
+    it("second sentence should have newlines", () => {
       assert.equal(sentences[1], "Another list: \n - green \n - blue \n - red");
     });
   });
 
-  describe("Sentence without lists", function () {
-    var entry = "First sentence... Another sentence.\nThis is a new paragraph.";
-    var sentences = tokenizer.sentences(entry);
+  describe("Sentence without lists", () => {
+    const entry =
+      "First sentence... Another sentence.\nThis is a new paragraph.";
+    const sentences = tokenizer.sentences(entry);
 
-    it("second sentence should have newlines", function () {
+    it("second sentence should have newlines", () => {
       assert.equal(sentences.length, 3);
     });
   });
 
-  describe("With option to use newlines as sentence boundaries", function () {
-    var entry = "First sentence... Another list: \n - green \n - blue \n - red";
-    var sentences = tokenizer.sentences(entry, { newline_boundaries: true });
+  describe("With option to use newlines as sentence boundaries", () => {
+    const entry =
+      "First sentence... Another list: \n - green \n - blue \n - red";
+    const sentences = tokenizer.sentences(entry, { newline_boundaries: true });
 
-    it("second sentence should have newlines", function () {
+    it("second sentence should have newlines", () => {
       assert.equal(sentences.length, 5);
     });
   });
 
-  describe("Multiline strings", function () {
-    var entry =
+  describe("Multiline strings", () => {
+    const entry =
       "How now brown cow.\
         \
         Peter Piper Picked a peck of pickled peppers. A peck of pickled peppers peter piper picked.";
 
-    var sentences = tokenizer.sentences(entry);
+    const sentences = tokenizer.sentences(entry);
 
-    it("Should have 3 sentences ending in periods", function () {
+    it("Should have 3 sentences ending in periods", () => {
       assert.equal(sentences[0], "How now brown cow.");
       assert.equal(
         sentences[1],
@@ -46,14 +49,14 @@ describe("Save newlines", function () {
     });
   });
 
-  describe("Template multiline strings", function () {
-    var entry = `How now brown cow.
+  describe("Template multiline strings", () => {
+    const entry = `How now brown cow.
 
         Peter Piper Picked a peck of pickled peppers. A peck of pickled peppers peter piper picked.`;
 
-    var sentences = tokenizer.sentences(entry, { newline_boundaries: true });
+    const sentences = tokenizer.sentences(entry, { newline_boundaries: true });
 
-    it("Should have 3 sentences ending in periods", function () {
+    it("Should have 3 sentences ending in periods", () => {
       assert.equal(sentences[0], "How now brown cow.");
       assert.equal(
         sentences[1],
