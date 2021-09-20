@@ -2,13 +2,13 @@
 
 The library is a fork of [@Tessmore's](https://github.com/Tessmore) [sbd](https://github.com/Tessmore/sbd). Unlike the original version, the fork's focused on a single use case and removes extra options.
 
-Split text into sentences with a `vanilla` rule based approach (i.e working ~95% of the time).
+Split text into sentences with [the vanilla strategy](https://en.wikipedia.org/wiki/Sentence_boundary_disambiguation#Strategies) (i.e working ~95% of the time).
 
 - Split a text based on period, question- and exclamation marks.
 - Skips (most) abbreviations (Mr., Mrs., PhD.)
-- Skips numbers/currency
+- Skips numbers/currency.
 - Skips urls, websites, email addresses, phone nr.
-- Counts ellipsis and ?! as single punctuation
+- Counts ellipsis and ?! as single punctuation.
 
 ## Installation
 
