@@ -119,20 +119,10 @@ describe("Multiple sentences", () => {
     });
   });
 
-  describe("If newlines are boundaries", () => {
-    const entry =
-      "Search on http://google.com\n\nThen send me an email: gg@gggg.kk";
-    const sentences = tokenizer.sentences(entry, { newline_boundaries: true });
-
-    it("should get 2 sentences", () => {
-      assert.equal(sentences.length, 2);
-    });
-  });
-
   describe("Sentences with quotations", () => {
     const entry =
       "“If there’s no balance and your boss doesn’t provide support and work that’s meaningful, your chances of burning out are great.” What bothers most people in situations like these is “the lack of boundaries,” says Nancy Rothbard, the David Pottruck Professor of Management at the University of Pennsylvania’s Wharton School.";
-    const sentences = tokenizer.sentences(entry, { newline_boundaries: true });
+    const sentences = tokenizer.sentences(entry);
 
     it("should get 2 sentences", () => {
       assert.equal(sentences.length, 2);
@@ -142,7 +132,7 @@ describe("Multiple sentences", () => {
   describe("Sentences with quotations", () => {
     const entry =
       "“If there’s no balance! And your boss doesn’t provide support and work that’s meaningful, your chances of burning out are great.” What bothers most people in situations like these is “the lack of boundaries,” says Nancy Rothbard, the David Pottruck Professor of Management at the University of Pennsylvania’s Wharton School.";
-    const sentences = tokenizer.sentences(entry, { newline_boundaries: true });
+    const sentences = tokenizer.sentences(entry);
 
     it("should get 3 sentences", () => {
       assert.equal(sentences.length, 3);
@@ -151,17 +141,7 @@ describe("Multiple sentences", () => {
 
   describe("Sentences with a name ending a sentence", () => {
     const entry = `If your boss assumes he can interrupt you any time and it’s "impacting the way you do your job," you should communicate that "you feel stretched," says Hill. A growing body of research shows that being “always on” hurts results.`;
-    const sentences = tokenizer.sentences(entry, { newline_boundaries: true });
-
-    it("should get 2 sentences", () => {
-      assert.equal(sentences.length, 2);
-    });
-  });
-
-  describe("If newlines are boundaries (B)", () => {
-    const entry =
-      "FAMILIY HISTORY   ========================================== Nothing interesting";
-    const sentences = tokenizer.sentences(entry, { newline_boundaries: true });
+    const sentences = tokenizer.sentences(entry);
 
     it("should get 2 sentences", () => {
       assert.equal(sentences.length, 2);

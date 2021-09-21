@@ -1,15 +1,10 @@
 import { englishAbbreviations } from "./abbreviations";
 import * as match from "./match";
 
-const newline_placeholder = " @~@ ";
-const newline_placeholder_t = newline_placeholder.trim();
-
 const whiteSpaceCheck = new RegExp("\\S", "");
-const addNewLineBoundaries = new RegExp("\\n+|[-#=_+*]{4,}", "g");
 const splitIntoWords = new RegExp("\\S+|\\n", "g");
 
 export interface SentencesOptions {
-  newline_boundaries?: boolean;
   preserve_whitespace?: boolean;
   abbreviations?: string[];
 }
@@ -29,22 +24,12 @@ export function sentences(
   }
 
   const options = {
-    newline_boundaries: false,
     preserve_whitespace: false,
     abbreviations: null,
   };
 
-  if (typeof user_options === "boolean") {
-    // Deprecated quick option
-    options.newline_boundaries = true;
-  } else {
-    // Extend options
-    Object.assign(options, user_options);
-  }
-
-  if (options.newline_boundaries) {
-    text = text.replace(addNewLineBoundaries, newline_placeholder);
-  }
+  // Extend options
+  Object.assign(options, user_options);
 
   // Split the text into words
   let words: string[] | null;
@@ -84,15 +69,7 @@ export function sentences(
       wordCount = 0;
     }
 
-    if (
-      match.isBoundaryChar(words[i]) ||
-      endsWithChar(words[i], "?!") ||
-      words[i] === newline_placeholder_t
-    ) {
-      if (options.newline_boundaries && words[i] === newline_placeholder_t) {
-        current.pop();
-      }
-
+    if (match.isBoundaryChar(words[i]) || endsWithChar(words[i], "?!")) {
       sentences.push(current);
 
       wordCount = 0;
@@ -224,7 +201,7 @@ export function sentences(
 
   // join tokens back together
   return result.map((sentence, ii) => {
-    if (options.preserve_whitespace && !options.newline_boundaries) {
+    if (options.preserve_whitespace) {
       // tokens looks like so: [leading-space token, non-space token, space
       // token, non-space token, space token... ]. In other words, the first
       // item is the leading space (or the empty string), and the rest of
