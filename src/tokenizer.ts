@@ -56,9 +56,7 @@ export function sentences(
     tokens = text.split(/(<br\s*\/?>|\S+|\n+)/);
 
     // every other token is a word
-    words = tokens.filter(function (token, ii) {
-      return ii % 2;
-    });
+    words = tokens.filter((_, i) => i % 2);
   } else {
     // - see http://blog.tompawlak.org/split-string-into-tokens-javascript
     words = text.trim().match(splitIntoWords);
@@ -66,7 +64,7 @@ export function sentences(
 
   let wordCount = 0;
   let index = 0;
-  let temp: false | string[] = [];
+  let temp: string[] | null = null;
   let sentences = [];
   let current = [];
 
@@ -120,12 +118,8 @@ export function sentences(
         }
 
         // Common abbr. that often do not end sentences
-        if (
-          match.isCommonAbbreviation(
-            options.abbreviations || englishAbbreviations,
-            words[i]
-          )
-        ) {
+        const abbreviations = options.abbreviations || englishAbbreviations;
+        if (match.isCommonAbbreviation(abbreviations, words[i])) {
           continue;
         }
 
@@ -141,10 +135,8 @@ export function sentences(
             continue;
           }
 
-          if (match.isNumber(words[i + 1])) {
-            if (match.isCustomAbbreviation(words[i])) {
-              continue;
-            }
+          if (match.isCustomAbbreviation(words[i], words[i + 1])) {
+            continue;
           }
         } else {
           // Skip ellipsis
@@ -173,7 +165,9 @@ export function sentences(
 
     // Check if the word has a dot in it
     if ((index = words[i].indexOf(".")) > -1) {
-      if (match.isNumber(words[i], index)) {
+      // NOTE: I've no idea why slice is needed, but I did extract it from
+      // isNumber (@kossnocorp)
+      if (match.isNumber(words[i].slice(index - 1, index + 2))) {
         continue;
       }
 
@@ -183,7 +177,7 @@ export function sentences(
       }
 
       // Skip urls / emails and the like
-      if (match.isURL(words[i]) || match.isPhoneNr(words[i])) {
+      if (match.isURLOrEmail(words[i]) || match.isPhoneNumber(words[i])) {
         continue;
       }
     }
@@ -204,12 +198,10 @@ export function sentences(
   }
 
   // Clear "empty" sentences
-  sentences = sentences.filter(function (s) {
-    return s.length > 0;
-  });
+  sentences = sentences.filter((s) => s.length > 0);
 
   const result = sentences.slice(1).reduce(
-    function (out, sentence) {
+    (out, sentence) => {
       const lastSentence = out[out.length - 1];
 
       // Single words, could be "enumeration lists"
@@ -231,7 +223,7 @@ export function sentences(
   );
 
   // join tokens back together
-  return result.map(function (sentence, ii) {
+  return result.map((sentence, ii) => {
     if (options.preserve_whitespace && !options.newline_boundaries) {
       // tokens looks like so: [leading-space token, non-space token, space
       // token, non-space token, space token... ]. In other words, the first
