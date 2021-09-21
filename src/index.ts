@@ -2,17 +2,15 @@ import { englishAbbreviations } from "./abbreviations";
 import * as match from "./match";
 
 const whiteSpaceCheck = new RegExp("\\S", "");
-const splitIntoWords = new RegExp("\\S+|\\n", "g");
 
 export interface SentencesOptions {
-  preserve_whitespace?: boolean;
   abbreviations?: string[];
 }
 
 // Split the entry into sentences.
 export function sentences(
   text: string,
-  user_options?: SentencesOptions
+  abbreviations = englishAbbreviations
 ): string[] {
   if (!text || typeof text !== "string" || !text.length) {
     return [];
@@ -23,29 +21,15 @@ export function sentences(
     return [];
   }
 
-  const options = {
-    preserve_whitespace: false,
-    abbreviations: null,
-  };
-
-  // Extend options
-  Object.assign(options, user_options);
-
   // Split the text into words
   let words: string[] | null;
   let tokens: string[];
 
   // Split the text into words
-  if (options.preserve_whitespace) {
-    // <br> tags are the odd man out, as whitespace is allowed inside the tag
-    tokens = text.split(/(<br\s*\/?>|\S+|\n+)/);
+  tokens = text.split(/(\S+|\n+)/);
 
-    // every other token is a word
-    words = tokens.filter((_, i) => i % 2);
-  } else {
-    // - see http://blog.tompawlak.org/split-string-into-tokens-javascript
-    words = text.trim().match(splitIntoWords);
-  }
+  // every other token is a word
+  words = tokens.filter((_, i) => i % 2);
 
   let wordCount = 0;
   let index = 0;
@@ -95,7 +79,6 @@ export function sentences(
         }
 
         // Common abbr. that often do not end sentences
-        const abbreviations = options.abbreviations || englishAbbreviations;
         if (match.isCommonAbbreviation(abbreviations, words[i])) {
           continue;
         }
@@ -201,21 +184,21 @@ export function sentences(
 
   // join tokens back together
   return result.map((sentence, ii) => {
-    if (options.preserve_whitespace) {
-      // tokens looks like so: [leading-space token, non-space token, space
-      // token, non-space token, space token... ]. In other words, the first
-      // item is the leading space (or the empty string), and the rest of
-      // the tokens are [non-space, space] token pairs.
-      let tokenCount = sentence.length * 2;
+    // if (options.preserve_whitespace) {
+    // tokens looks like so: [leading-space token, non-space token, space
+    // token, non-space token, space token... ]. In other words, the first
+    // item is the leading space (or the empty string), and the rest of
+    // the tokens are [non-space, space] token pairs.
+    let tokenCount = sentence.length * 2;
 
-      if (ii === 0) {
-        tokenCount += 1;
-      }
-
-      return tokens.splice(0, tokenCount).join("");
+    if (ii === 0) {
+      tokenCount += 1;
     }
 
-    return sentence.join(" ");
+    return tokens.splice(0, tokenCount).join("");
+    // }
+
+    // return sentence.join(" ");
   });
 }
 
