@@ -119,8 +119,7 @@ describe("match", () => {
   describe("isURLOrEmail", () => {
     it("returns true if the string is an URL", () => {
       expect(isURLOrEmail("https://www.google.com")).toBe(true);
-      // TODO: Update the regular expression
-      // expect(isURL("t.me/kossnocorp")).toBe(true);
+      expect(isURLOrEmail("t.me/kossnocorp")).toBe(true);
       expect(isURLOrEmail("tme/kossnocorp")).toBe(false);
       expect(isURLOrEmail("koss@nocorp.me")).toBe(true);
       expect(isURLOrEmail("koss@t.me")).toBe(true);
