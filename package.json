@@ -2,9 +2,16 @@
   "name": "@chirrapp/sbd",
   "version": "2.0.0",
   "description": "Split text into sentences using vanilla sentence boundary detection (SBD) algorithm",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc -p tsconfig.lib.json"
   },
   "homepage": "http://github.com/chirrapp/sbd",
   "repository": {
