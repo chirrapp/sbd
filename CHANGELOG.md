@@ -7,6 +7,6 @@ This change log follows the format documented in [Keep a CHANGELOG].
 [semantic versioning]: http://semver.org/
 [keep a changelog]: http://keepachangelog.com/
 
-## 2.0.1 - 2021-09-22
+## 2.0.2 - 2021-09-22
 
 Initial forked version. See [the origin](https://github.com/Tessmore/sbd) for the past versions history.
