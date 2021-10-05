@@ -3,7 +3,7 @@ name: Run tests
 on: [push]
 
 jobs:
-  publish:
+  tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,3 +14,23 @@ jobs:
       - run: npm install
 
       - run: npm test
+
+      - run: npm run build
+
+      - run: npm run benchmark --silent | tee ./benchmark-result.txt
+
+      - name: Download previous benchmark data
+        uses: actions/cache@v2
+        with:
+          path: ./benchmark
+          key: ${{ runner.os }}-benchmark
+
+      - name: Store benchmark result
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          tool: "benchmarkjs"
+          output-file-path: ./benchmark-result.txt
+          external-data-json-path: ./benchmark/data.json
+          fail-on-alert: true
+          comment-always: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
