@@ -6,7 +6,10 @@
 import { englishAbbreviations } from "./abbreviations";
 import * as matcher from "./matcher";
 
-const whiteSpaceCheck = new RegExp("\\S", "");
+const spaceRegExp = /\S/;
+const enumListRegExp = /^.{1,2}[.]$/;
+const enumListAnotherRegExp = /[.]/;
+const wordsSplitRegExp = /(\S+|\n+)/;
 
 export interface SentencesOptions {
   abbreviations?: string[];
@@ -17,21 +20,15 @@ export function sentences(
   text: string,
   abbreviations = englishAbbreviations
 ): string[] {
-  if (!text || typeof text !== "string" || !text.length) {
-    return [];
-  }
-
-  if (!whiteSpaceCheck.test(text)) {
-    // whitespace-only string has no sentences
-    return [];
-  }
+  // Whitespace-only string has no sentences
+  if (!spaceRegExp.test(text)) return [];
 
   // Split the text into words
   let words: string[] | null;
   let tokens: string[];
 
   // Split the text into words
-  tokens = text.split(/(\S+|\n+)/);
+  tokens = text.split(wordsSplitRegExp);
 
   // every other token is a word
   words = tokens.filter((_, i) => i % 2);
@@ -47,7 +44,7 @@ export function sentences(
     return [];
   }
 
-  for (let i = 0, L = words.length; i < L; i++) {
+  for (let i = 0; i < words.length; i++) {
     wordCount++;
 
     // Add the word to current sentence
@@ -58,7 +55,10 @@ export function sentences(
       wordCount = 0;
     }
 
-    if (matcher.isBoundaryChar(words[i]) || endsWithChar(words[i], "?!")) {
+    if (
+      matcher.isBoundaryChar(words[i]) ||
+      "?!".indexOf(words[i].slice(-1)) > -1
+    ) {
       sentences.push(current);
 
       wordCount = 0;
@@ -67,17 +67,18 @@ export function sentences(
       continue;
     }
 
-    if (endsWithChar(words[i], '"') || endsWithChar(words[i], "”")) {
+    if (words[i].endsWith('"') || words[i].endsWith("”")) {
       words[i] = words[i].slice(0, -1);
     }
 
-    // A dot might indicate the end sentences
+    // A dot might indicate the end sentences.
+    //
     // Exception: The next sentence starts with a word (non abbreviation)
-    //            that has a capital letter.
-    if (endsWithChar(words[i], ".")) {
+    // that has a capital letter.
+    if (words[i].endsWith(".")) {
       // Check if there is a next word
       // This probably needs to be improved with machine learning
-      if (i + 1 < L) {
+      if (i + 1 < words.length) {
         // Single character abbr.
         if (words[i].length === 2 && isNaN(+words[i].charAt(0))) {
           continue;
@@ -170,10 +171,10 @@ export function sentences(
       const lastSentence = out[out.length - 1];
 
       // Single words, could be "enumeration lists"
-      if (lastSentence.length === 1 && /^.{1,2}[.]$/.test(lastSentence[0])) {
+      if (lastSentence.length === 1 && enumListRegExp.test(lastSentence[0])) {
         // Check if there is a next sentence
         // It should not be another list item
-        if (!/[.]/.test(sentence[0])) {
+        if (!enumListAnotherRegExp.test(sentence[0])) {
           out.pop();
           out.push(lastSentence.concat(sentence));
           return out;
@@ -187,30 +188,9 @@ export function sentences(
     [sentences[0]]
   );
 
-  // join tokens back together
-  return result.map((sentence, ii) => {
-    // if (options.preserve_whitespace) {
-    // tokens looks like so: [leading-space token, non-space token, space
-    // token, non-space token, space token... ]. In other words, the first
-    // item is the leading space (or the empty string), and the rest of
-    // the tokens are [non-space, space] token pairs.
-    let tokenCount = sentence.length * 2;
-
-    if (ii === 0) {
-      tokenCount += 1;
-    }
-
+  // Join tokens back together
+  return result.map((sentence, sentenceIndex) => {
+    const tokenCount = sentence.length * 2 + (sentenceIndex === 0 ? 1 : 0);
     return tokens.splice(0, tokenCount).join("");
-    // }
-
-    // return sentence.join(" ");
   });
-}
-
-function endsWithChar(word: string, char: string): boolean {
-  if (char.length > 1) {
-    return char.indexOf(word.slice(-1)) > -1;
-  } else {
-    return word.slice(-1) === char;
-  }
 }
