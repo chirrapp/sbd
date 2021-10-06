@@ -11,7 +11,7 @@ This change log follows the format documented in [Keep a CHANGELOG].
 
 ### Changed
 
-- The code performace was optimized.
+- The code performance was optimized.
 
 - Improved support for non-latin texts.
 
