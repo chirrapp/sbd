@@ -1,4 +1,9 @@
 /**
+ * This module contains a collection of abbreviation definitions.
+ * @module
+ */
+
+/**
  * Common English abbreviations.
  */
 export const englishAbbreviations = [

@@ -1,4 +1,10 @@
 /**
+ * This module is responsible for matching text - checking if word
+ * is capitalized, if it is a time abbreviation, etc.
+ * @module
+ */
+
+/**
  * Checks if the word is capitalized.
  *
  * @param word - the word to check

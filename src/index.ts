@@ -1,5 +1,10 @@
+/**
+ * The root library module, exports the sentences function.
+ * @module
+ */
+
 import { englishAbbreviations } from "./abbreviations";
-import * as match from "./match";
+import * as matcher from "./matcher";
 
 const whiteSpaceCheck = new RegExp("\\S", "");
 
@@ -53,7 +58,7 @@ export function sentences(
       wordCount = 0;
     }
 
-    if (match.isBoundaryChar(words[i]) || endsWithChar(words[i], "?!")) {
+    if (matcher.isBoundaryChar(words[i]) || endsWithChar(words[i], "?!")) {
       sentences.push(current);
 
       wordCount = 0;
@@ -79,23 +84,23 @@ export function sentences(
         }
 
         // Common abbr. that often do not end sentences
-        if (match.isCommonAbbreviation(abbreviations, words[i])) {
+        if (matcher.isCommonAbbreviation(abbreviations, words[i])) {
           continue;
         }
 
         // Next word starts with capital word, but current sentence is
         // quite short
-        if (match.isSentenceStarter(words[i + 1])) {
-          if (match.isTimeAbbreviation(words[i], words[i + 1])) {
+        if (matcher.isSentenceStarter(words[i + 1])) {
+          if (matcher.isTimeAbbreviation(words[i], words[i + 1])) {
             continue;
           }
 
           // Dealing with names at the start of sentences
-          if (match.isNameAbbreviation(wordCount, words.slice(i, 6))) {
+          if (matcher.isNameAbbreviation(wordCount, words.slice(i, 6))) {
             continue;
           }
 
-          if (match.isCustomAbbreviation(words[i], words[i + 1])) {
+          if (matcher.isCustomAbbreviation(words[i], words[i + 1])) {
             continue;
           }
         } else {
@@ -106,11 +111,11 @@ export function sentences(
 
           //// Skip abbreviations
           // Short words + dot or a dot after each letter
-          if (match.isDottedAbbreviation(words[i])) {
+          if (matcher.isDottedAbbreviation(words[i])) {
             continue;
           }
 
-          if (match.isNameAbbreviation(wordCount, words.slice(i, 5))) {
+          if (matcher.isNameAbbreviation(wordCount, words.slice(i, 5))) {
             continue;
           }
         }
@@ -127,22 +132,22 @@ export function sentences(
     if ((index = words[i].indexOf(".")) > -1) {
       // NOTE: I've no idea why slice is needed, but I did extract it from
       // isNumber (@kossnocorp)
-      if (match.isNumber(words[i].slice(index - 1, index + 2))) {
+      if (matcher.isNumber(words[i].slice(index - 1, index + 2))) {
         continue;
       }
 
       // Custom dotted abbreviations (like K.L.M or I.C.T)
-      if (match.isDottedAbbreviation(words[i])) {
+      if (matcher.isDottedAbbreviation(words[i])) {
         continue;
       }
 
       // Skip urls / emails and the like
-      if (match.isURLOrEmail(words[i]) || match.isPhoneNumber(words[i])) {
+      if (matcher.isURLOrEmail(words[i]) || matcher.isPhoneNumber(words[i])) {
         continue;
       }
     }
 
-    if ((temp = match.isConcatenated(words[i]))) {
+    if ((temp = matcher.isConcatenated(words[i]))) {
       current.pop();
       current.push(temp[0]);
       sentences.push(current);

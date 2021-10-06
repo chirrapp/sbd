@@ -14,7 +14,7 @@ import {
 } from ".";
 import { englishAbbreviations } from "../abbreviations";
 
-describe("match", () => {
+describe("matcher", () => {
   describe("isCapitalized", () => {
     it("checks if the string is capitalized", () => {
       expect(isCapitalized("Hello")).toBe(true);
