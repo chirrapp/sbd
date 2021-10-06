@@ -9,12 +9,14 @@ import {
   isNumber,
   isPhoneNumber,
   isSentenceStarter,
+  isCommonAbbreviation,
   isTimeAbbreviation,
   isURLOrEmail,
 } from ".";
 import {
   isCapitalized as prevIsCapitalized,
   isSentenceStarter as prevIsSentenceStarter,
+  isCommonAbbreviation as prevIsCommonAbbreviation,
   isTimeAbbreviation as prevIsTimeAbbreviation,
   isDottedAbbreviation as prevIsDottedAbbreviation,
   isCustomAbbreviation as prevIsCustomAbbreviation,
@@ -25,30 +27,45 @@ import {
   isConcatenated as prevIsConcatenated,
   isBoundaryChar as prevIsBoundaryChar,
 } from "../../lib/matcher";
+import { englishAbbreviations } from "../abbreviations";
 
 const suite = new Benchmark.Suite();
 
 const word = "Unimaginatively";
 
+// isCapitalized
+
 suite.add("isCapitalized", () => {
   isCapitalized(word);
 });
 
-if (!process.env.CI) {
-  suite.add("Previous isCapitalized", () => {
-    prevIsCapitalized(word);
-  });
-}
-
-suite.add("isSentenceStarter", () => {
-  isSentenceStarter(word);
+suite.add("Previous isCapitalized", () => {
+  prevIsCapitalized(word);
 });
 
-if (!process.env.CI) {
-  suite.add("Previous isSentenceStarter", () => {
-    prevIsSentenceStarter(word);
-  });
-}
+// isSentenceStarter
+
+const starterWord = "unimaginatively";
+
+suite.add("isSentenceStarter", () => {
+  isSentenceStarter(starterWord);
+});
+
+suite.add("Previous isSentenceStarter", () => {
+  prevIsSentenceStarter(starterWord);
+});
+
+// isCommonAbbreviation
+
+suite.add("isCommonAbbreviation", () => {
+  isCommonAbbreviation(englishAbbreviations, starterWord);
+});
+
+suite.add("Previous isCommonAbbreviation", () => {
+  prevIsCommonAbbreviation(englishAbbreviations, starterWord);
+});
+
+// isTimeAbbreviation
 
 const timeWord = "a.m.";
 const nextTimeWord = "Tuesday";
@@ -57,11 +74,11 @@ suite.add("isTimeAbbreviation", () => {
   isTimeAbbreviation(timeWord, nextTimeWord);
 });
 
-if (!process.env.CI) {
-  suite.add("Previous isTimeAbbreviation", () => {
-    prevIsTimeAbbreviation(timeWord, nextTimeWord);
-  });
-}
+suite.add("Previous isTimeAbbreviation", () => {
+  prevIsTimeAbbreviation(timeWord, nextTimeWord);
+});
+
+// isDottedAbbreviation
 
 const dottedWord = "K.L.M";
 
@@ -69,11 +86,11 @@ suite.add("isDottedAbbreviation", () => {
   isDottedAbbreviation(dottedWord);
 });
 
-if (!process.env.CI) {
-  suite.add("Previous isDottedAbbreviation", () => {
-    prevIsDottedAbbreviation(dottedWord);
-  });
-}
+suite.add("Previous isDottedAbbreviation", () => {
+  prevIsDottedAbbreviation(dottedWord);
+});
+
+// isCustomAbbreviation
 
 const abbrWord = "DOM";
 const abbrNextWord = "123";
@@ -82,11 +99,11 @@ suite.add("isCustomAbbreviation", () => {
   isCustomAbbreviation(abbrWord, abbrNextWord);
 });
 
-if (!process.env.CI) {
-  suite.add("Previous isCustomAbbreviation", () => {
-    prevIsCustomAbbreviation(abbrWord, abbrNextWord);
-  });
-}
+suite.add("Previous isCustomAbbreviation", () => {
+  prevIsCustomAbbreviation(abbrWord, abbrNextWord);
+});
+
+// isNameAbbreviation
 
 const nameWordCount = 6;
 const nameWords = ["Carl", "Viggo", "Manthey", "Lange"];
@@ -95,21 +112,21 @@ suite.add("isNameAbbreviation", () => {
   isNameAbbreviation(nameWordCount, nameWords);
 });
 
-if (!process.env.CI) {
-  suite.add("Previous isNameAbbreviation", () => {
-    prevIsNameAbbreviation(nameWordCount, nameWords);
-  });
-}
+suite.add("Previous isNameAbbreviation", () => {
+  prevIsNameAbbreviation(nameWordCount, nameWords);
+});
+
+// isNumber
 
 suite.add("isNumber", () => {
   isNumber(word);
 });
 
-if (!process.env.CI) {
-  suite.add("Previous isNumber", () => {
-    prevIsNumber(word);
-  });
-}
+suite.add("Previous isNumber", () => {
+  prevIsNumber(word);
+});
+
+// isPhoneNumber
 
 const phoneWord = "+1-808-468-4343";
 
@@ -117,11 +134,11 @@ suite.add("isPhoneNumber", () => {
   isPhoneNumber(phoneWord);
 });
 
-if (!process.env.CI) {
-  suite.add("Previous isPhoneNumber", () => {
-    prevIsPhoneNumber(phoneWord);
-  });
-}
+suite.add("Previous isPhoneNumber", () => {
+  prevIsPhoneNumber(phoneWord);
+});
+
+// isURLOrEmail
 
 const urlWord = "https://getchirrapp.com/";
 
@@ -129,11 +146,11 @@ suite.add("isURLOrEmail", () => {
   isURLOrEmail(urlWord);
 });
 
-if (!process.env.CI) {
-  suite.add("Previous isURLOrEmail", () => {
-    prevIsURLOrEmail(urlWord);
-  });
-}
+suite.add("Previous isURLOrEmail", () => {
+  prevIsURLOrEmail(urlWord);
+});
+
+isConcatenated;
 
 const concatenatedWord = "deadline?Don";
 
@@ -141,24 +158,24 @@ suite.add("isConcatenated", () => {
   isConcatenated(concatenatedWord);
 });
 
-if (!process.env.CI) {
-  suite.add("Previous isConcatenated", () => {
-    prevIsConcatenated(concatenatedWord);
-  });
-}
+suite.add("Previous isConcatenated", () => {
+  prevIsConcatenated(concatenatedWord);
+});
+
+// isBoundaryChar
 
 suite.add("isBoundaryChar", () => {
   isBoundaryChar(word);
 });
 
-if (!process.env.CI) {
-  suite.add("Previous isBoundaryChar", () => {
-    prevIsBoundaryChar(word);
-  });
-}
+suite.add("Previous isBoundaryChar", () => {
+  prevIsBoundaryChar(word);
+});
 
-suite
-  .on("cycle", (event: any) => {
-    console.log(String(event.target));
-  })
-  .run();
+if (!process.env.CI) {
+  suite
+    .on("cycle", (event: any) => {
+      console.log(String(event.target));
+    })
+    .run();
+}

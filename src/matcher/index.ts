@@ -11,7 +11,8 @@
  * @returns true if the word is capitalized
  */
 export function isCapitalized(word: string): boolean {
-  return /^[A-Z][a-z].*/.test(word);
+  const char = word.charAt(0);
+  return char.toLowerCase() !== char;
 }
 
 /**
@@ -22,10 +23,17 @@ export function isCapitalized(word: string): boolean {
  * @returns true if the word is a sentence starter
  */
 export function isSentenceStarter(word: string): boolean {
+  const firstChar = word.charAt(0);
   return (
-    isCapitalized(word) || isNumber(word) || /``|"|'/.test(word.substring(0, 2))
+    isCapitalized(word) ||
+    isNumber(word) ||
+    firstChar === '"' ||
+    firstChar === "'" ||
+    word.substring(0, 2) === "``"
   );
 }
+
+const trimRegExp = /[-'`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi;
 
 /**
  * Checks if the word is an abbreviation.
@@ -38,12 +46,11 @@ export function isCommonAbbreviation(
   abbreviations: string[],
   word: string
 ): boolean {
-  const noSymbols = word.replace(
-    /[-'`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi,
-    ""
-  );
-  return !!~abbreviations.indexOf(noSymbols);
+  const trimmedWord = word.replace(trimRegExp, "");
+  return abbreviations.includes(trimmedWord);
 }
+
+const dayRegExp = /day\W*$/;
 
 /**
  * Checks if the word combination is a time abbreviation.
@@ -53,13 +60,10 @@ export function isCommonAbbreviation(
  * @returns true if the word is a time abbreviation
  */
 export function isTimeAbbreviation(word: string, nextWord: string) {
-  if (word === "a.m." || word === "p.m.") {
-    const tmp = nextWord.replace(/\W+/g, "").slice(-3).toLowerCase();
-    if (tmp === "day") return true;
-  }
-
-  return false;
+  return (word === "a.m." || word === "p.m.") && dayRegExp.test(nextWord);
 }
+
+const dottedRegExp = /.\../;
 
 /**
  * Checks if the word is a dotted abbreviation (i.e. K.L.M or I.C.T).
@@ -68,23 +72,21 @@ export function isTimeAbbreviation(word: string, nextWord: string) {
  * @returns true if the word is a dotted abbreviation
  */
 export function isDottedAbbreviation(word: string) {
-  const matches = word.replace(/[\(\)\[\]\{\}]/g, "").match(/(.\.)*/);
-  return matches && matches[0].length > 0;
+  return dottedRegExp.test(word);
 }
 
 /**
- * NOTE: I don't quite get the logic behind the function or why it's there (@kossnocorp).
+ * Returns true if the word pair is a custom abbreviation (i.e. T 3000)
  *
  * @param word - the word to check
  * @param nextWord - the next word
- * @returns TODO
+ * @returns true if the word pair is a custom abbreviation
  */
 export function isCustomAbbreviation(word: string, nextWord: string) {
-  if (!isNumber(nextWord)) return false;
-
-  if (word.length <= 3) return true;
-
-  return isCapitalized(word) || isNumber(word);
+  return (
+    isNumber(nextWord) &&
+    (word.length <= 3 || isCapitalized(word) || isNumber(word))
+  );
 }
 
 /**
@@ -107,8 +109,12 @@ export function isNameAbbreviation(wordCount: number, words: string[]) {
       return true;
     }
 
-    const capitalized = words.filter((str) => /[A-Z]/.test(str.charAt(0)));
-    return capitalized.length >= 3;
+    let count = 0;
+
+    for (const word of words) {
+      if (isCapitalized(word)) count++;
+      if (count >= 3) return true;
+    }
   }
 
   return false;
@@ -124,6 +130,9 @@ export function isNumber(str: string) {
   return !isNaN(+str);
 }
 
+const phoneRegExp =
+  /^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/;
+
 /**
  * Checks if the string is a valid phone number.
  *
@@ -133,10 +142,11 @@ export function isNumber(str: string) {
  * @returns true if the string is a phone number
  */
 export function isPhoneNumber(str: string) {
-  return !!str.match(
-    /^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/
-  );
+  return phoneRegExp.test(str);
 }
+
+const urlRegExp =
+  /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-z]{1,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 
 /**
  * Checks if the string is a URl or email.
@@ -147,10 +157,10 @@ export function isPhoneNumber(str: string) {
  * @returns true if the string is a URL or email
  */
 export function isURLOrEmail(str: string) {
-  return !!str.match(
-    /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-z]{1,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
-  );
+  return urlRegExp.test(str);
 }
+
+const letterRegExp = /[a-zA-Z]/;
 
 /**
  * Checks if the string is a concatenation of two words.
@@ -169,7 +179,7 @@ export function isConcatenated(str: string): [string, string] | null {
     const char = str.charAt(index + 1);
 
     // Check if the next word starts with a letter
-    if (char.match(/[a-zA-Z].*/)) {
+    if (letterRegExp.test(char)) {
       return [str.slice(0, index), str.slice(index + 1)];
     }
   }
