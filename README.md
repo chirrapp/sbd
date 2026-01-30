@@ -1,32 +1,28 @@
-# Sentence boundary detection
+# Smol Sentence Boundary Detection (SBD)
 
-The library is a fork of [@Tessmore's](https://github.com/Tessmore) [sbd](https://github.com/Tessmore/sbd). Unlike the original version, the fork's focused on a single use case and removes extra options.
+Tiny sentence boundary detection library for JavaScript/TypeScript.
 
-Split text into sentences with [the vanilla strategy](https://en.wikipedia.org/wiki/Sentence_boundary_disambiguation#Strategies) (i.e working ~95% of the time).
+It uses [the vanilla strategy](https://en.wikipedia.org/wiki/Sentence_boundary_disambiguation#Strategies) covering ~95% of cases.
 
-- Split a text based on period, question- and exclamation marks.
-- Skips (most) abbreviations (Mr., Mrs., PhD.)
-- Skips numbers/currency.
-- Skips urls, websites, email addresses, phone nr.
-- Counts ellipsis and ?! as single punctuation.
+This is modernized and trimmed fork of [Fabiën Tesselaar's](https://github.com/Tessmore) [sbd](https://github.com/Tessmore/sbd). Unlike the original version, it is focused on the single task and removes extra options.
 
 ## Installation
 
-The library is available as an npm package published at the GitHub Registry. To install @chirrapp/sbd run:
+The package is available on npm:
 
 ```sh
-npm install @chirrapp/sbd --save
-# Or using Yarn:
-yarn add @chirrapp/sbd
+npm install smolsdb
 ```
 
-## Using
+## Usage
+
+Import the `sentences` function and pass a string to it. It will return an array of sentences.
 
 ```ts
-import { sentences } from "@chirrapp/sbd";
+import { sentences } from "smolsdb";
 
 sentences(
-  "On Jan. 20, former Sen. Barack Obama became the 44th President of the U.S. Millions attended the Inauguration."
+  "On Jan. 20, former Sen. Barack Obama became the 44th President of the U.S. Millions attended the Inauguration.",
 );
 //=> [
 //=>   "On Jan. 20, former Sen. Barack Obama became the 44th President of the U.S.",
@@ -34,6 +30,10 @@ sentences(
 //=> ]
 ```
 
+## Changelog
+
+See [the changelog](./CHANGELOG.md).
+
 ## License
 
-[MIT © Fabiën Tesselaar](./LECENSE)
+[MIT © Fabiën Tesselaar](./LICENSE)

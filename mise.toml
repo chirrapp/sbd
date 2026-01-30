@@ -1,0 +1,11 @@
+[tools]
+# Stack
+node = "latest"
+pnpm = "latest"
+
+# Tools
+opencode = "latest"
+
+[settings]
+experimental = true
+locked = true

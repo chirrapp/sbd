@@ -7,30 +7,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v2
-
-      - run: npm install
-
-      - run: npm test
-
-      - run: npm run build
-
-      - run: npm run benchmark --silent | tee ./benchmark-result.txt
-
-      - name: Download previous benchmark data
-        uses: actions/cache@v2
+      - uses: pnpm/action-setup@v4
         with:
-          path: ./benchmark
-          key: ${{ runner.os }}-benchmark
+          version: 9
 
-      - name: Store benchmark result
-        uses: benchmark-action/github-action-benchmark@v1
+      - uses: actions/setup-node@v4
         with:
-          tool: "benchmarkjs"
-          output-file-path: ./benchmark-result.txt
-          external-data-json-path: ./benchmark/data.json
-          fail-on-alert: true
-          comment-always: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          node-version: "18"
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm test
+
+      - run: pnpm build

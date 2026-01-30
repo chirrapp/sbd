@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+import { englishAbbreviations } from "./abbreviations.js";
 import {
   isBoundaryChar,
   isCapitalized,
@@ -11,8 +13,7 @@ import {
   isSentenceStarter,
   isTimeAbbreviation,
   isURLOrEmail,
-} from ".";
-import { englishAbbreviations } from "../abbreviations";
+} from "./matcher.js";
 
 describe("matcher", () => {
   describe("isCapitalized", () => {
@@ -88,10 +89,10 @@ describe("matcher", () => {
 
     it("returns true if three or more words are capitalized", () => {
       expect(isNameAbbreviation(1, ["Vladimir", "Ilyich", "Ulyanov"])).toBe(
-        true
+        true,
       );
       expect(isNameAbbreviation(1, ["Vladimir", "ilyich", "Ulyanov"])).toBe(
-        false
+        false,
       );
     });
 

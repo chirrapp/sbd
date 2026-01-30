@@ -1,4 +1,9 @@
 {
   "extends": "./tsconfig",
-  "exclude": ["**/tests.ts", "**/benchmark.ts"]
+  "include": ["./src/**/*.ts"],
+  "exclude": ["**/*.test.ts", "**/*.bench.ts"],
+  "compilerOptions": {
+    // Build
+    "incremental": false
+  }
 }

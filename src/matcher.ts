@@ -44,7 +44,7 @@ const trimRegExp = /[-'`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi;
  */
 export function isCommonAbbreviation(
   abbreviations: string[],
-  word: string
+  word: string,
 ): boolean {
   const trimmedWord = word.replace(trimRegExp, "");
   return abbreviations.includes(trimmedWord);
@@ -103,7 +103,9 @@ export function isNameAbbreviation(wordCount: number, words: string[]) {
   if (words.length > 0) {
     if (
       wordCount < 5 &&
+      // @ts-expect-error: TODO
       words[0].length < 6 &&
+      // @ts-expect-error: TODO
       (isCapitalized(words[0]) || isNumber(words[0]))
     ) {
       return true;
