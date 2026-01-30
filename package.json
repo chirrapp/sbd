@@ -20,7 +20,7 @@
   "files": [
     "dist",
     "CHANGELOG.md",
-    "LICENSE",
+    "LICENSE.md",
     "README.md"
   ],
   "type": "module",
